@@ -92,7 +92,6 @@
         return 1; // Tout va bien
     }
 
-    // PERMET DE CHARGER LE FICHIER DE DONNEES DANS LA RAM (JE NE COMPREND PAS LE CODE, CAR C'EST GEMINI QUI L'A FAIT)
     void ChargerCorpusEnRAM(const char* nomFichier) {
         FILE* f = fopen(nomFichier, "rb");
         if (!f) { printf("Erreur: Impossible de lire le corpus.\n"); exit(1); }
@@ -106,7 +105,7 @@
 
         fread(BUFFER_TEXTE, 1, TAILLE_CORPUS, f);
         fclose(f);
-        printf("🚀 Corpus de %ld octets chargé en RAM.\n", TAILLE_CORPUS);
+        printf("Corpus de %ld octets chargé en RAM.\n", TAILLE_CORPUS);
     }
 
     int InitialisationProchaineLigne() {
