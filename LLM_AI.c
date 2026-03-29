@@ -581,7 +581,7 @@
         srand(time(NULL));
         COUCHE_ORDRE = (COUCHE*)malloc(sizeof(COUCHE) * NmbCouche);
         if (COUCHE_ORDRE == NULL) {
-            printf("🚨 Erreur critique : Impossible d'allouer la mémoire pour l'IA.\n");
+            printf("Erreur critique : Impossible d'allouer la mémoire pour l'IA.\n");
             return 1;
         }
         memset(COUCHE_ORDRE, 0, sizeof(COUCHE) * NmbCouche);
