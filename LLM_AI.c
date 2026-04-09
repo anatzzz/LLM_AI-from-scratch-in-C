@@ -92,6 +92,7 @@
         return 1; // Tout va bien
     }
 
+    // PERMET DE CHARGER LE FICHIER DE DONNEES DANS LA RAM (JE NE COMPREND PAS LE CODE, CAR C'EST GEMINI QUI L'A FAIT)
     void ChargerCorpusEnRAM(const char* nomFichier) {
         FILE* f = fopen(nomFichier, "rb");
         if (!f) { printf("Erreur: Impossible de lire le corpus.\n"); exit(1); }
@@ -105,7 +106,7 @@
 
         fread(BUFFER_TEXTE, 1, TAILLE_CORPUS, f);
         fclose(f);
-        printf("Corpus de %ld octets chargé en RAM.\n", TAILLE_CORPUS);
+        printf("🚀 Corpus de %ld octets chargé en RAM.\n", TAILLE_CORPUS);
     }
 
     int InitialisationProchaineLigne() {
@@ -126,16 +127,17 @@
     }
 
     void InitialisationDeLia(int INDEX_SELECTIONNE){
-    for(int d=0; d<NmbDimensions; d++){
-        for(int i=0; i<NmbEntree-1; i++){
-        entree[i][d] = entree[i+1][d];
+        // Décalage des indices
+        for(int i = 0; i < NmbEntree - 1; i++){
+            INDICE_ENTREE[i] = INDICE_ENTREE[i + 1];
         }
-        entree[NmbEntree-1][d] = INDEX_SELECTIONNE/255.0f;
-    }
+
+        // Nouveau caractère à la fin
+        INDICE_ENTREE[NmbEntree - 1] = INDEX_SELECTIONNE;
     }
 
     void InitialisationAleatoire(){
-        float LIMITE_XAVIER = sqrt(6.0f / (NmbDimensions + NmbDimensions)); // INITIALISATION DE XAVIER
+        float LIMITE_XAVIER = sqrt(6.0f / (NmbDimensions + NmbDimensions)); // INITIALISATION DE XAVIER (je ne comprend pas mais ca marche, à revoir)
 
         for(int c=0; c<NmbCouche; c++){
             for(int d=0; d<NmbDimensions; d++){
@@ -446,7 +448,7 @@
         }
     }
 
-    // ON CALCUL DC/DSOFTMAXij,d(l)
+    // ON CALCUL DC/DSOFTMAXij,d(l) JE NE COMPREND PAS LA DERVIEE, JE L'ADMET -> A TRAVAILLER
 
         for(int e=0; e<NmbEntree; e++){
             for(int eplus1=0; eplus1<=e; eplus1++){
@@ -457,7 +459,7 @@
             }
         }
 
-    // ON CALCUL DC/DSCORE
+    // ON CALCUL DC/DSCORE // JE NE COMPREND PAS LA DERVIEE, JE L'ADMET -> A TRAVAILLER
 
         for(int e=0; e<NmbEntree; e++){
             for(int eplus1=0; eplus1<=e; eplus1++){
@@ -484,7 +486,7 @@
             }
         }
 
-    // ON CHERCHE LE DELTA DE Q  (DC/DQi,d(l))
+    // ON CHERCHE LE DELTA DE Q  (DC/DQi,d(l)) // JE NE COMPREND PAS LA DERVIEE, JE L'ADMET -> A TRAVAILLER
 
         for(int e=0; e<NmbEntree; e++){
             for(int d=0; d<NmbDimensions; d++){
@@ -495,7 +497,7 @@
             }
         }
 
-    // ON CHERCHE LE DELTA DE K  (DC/DKi,d(l))
+    // ON CHERCHE LE DELTA DE K  (DC/DKi,d(l)) // JE NE COMPREND PAS LA DERVIEE, JE L'ADMET -> A TRAVAILLER
         for(int e=0; e<NmbEntree; e++){
             for(int d=0; d<NmbDimensions; d++){
                 COUCHE_ORDRE[c].DELTA_K[e][d] = 0;
@@ -509,7 +511,7 @@
             }
         }
 
-    // ON CHERCHE LE DELTA DE E
+    // ON CHERCHE LE DELTA DE E // JE NE COMPREND PAS LA DERVIEE, JE L'ADMET -> A TRAVAILLER
 
         for(int e=0; e<NmbEntree; e++){
             for(int d=0; d<NmbDimensions; d++){
@@ -579,9 +581,11 @@
     int main(){
         char CHOIX;
         srand(time(NULL));
+
+        // TRUC DE MEMOIRE DE GPT QUE JE COMPREND PAS
         COUCHE_ORDRE = (COUCHE*)malloc(sizeof(COUCHE) * NmbCouche);
         if (COUCHE_ORDRE == NULL) {
-            printf("Erreur critique : Impossible d'allouer la mémoire pour l'IA.\n");
+            printf("🚨 Erreur critique : Impossible d'allouer la mémoire pour l'IA.\n");
             return 1;
         }
         memset(COUCHE_ORDRE, 0, sizeof(COUCHE) * NmbCouche);
@@ -589,20 +593,20 @@
         Memoire();
 
         // ON CHARGE LES DONNEES D'ENTRAINEMENT
-        FILE* fichierEntrainement = fopen("corpus_final.txt", "r"); // OUVERTURE LECTURE
+        FILE* fichierEntrainement = fopen("CORPUS.txt", "r"); // OUVERTURE LECTURE
         if(fichierEntrainement == NULL){
             perror("\nErreur lors de l'ouverture du fichier : ");
             return 0;
         }
 
-        ChargerCorpusEnRAM("corpus_final.txt");
+        ChargerCorpusEnRAM("CORPUS.txt");
 
         printf("\n\n=====================================================\n\n");
         printf("Fichier ouvert avec succes.\n\n");
         printf("\n\n=====================================================\n\n");
 
         printf("Que Souhaitez vous faire ? :\n\n't' -> tester l'intelligence artificielle\n'e' -> entrainer l'intelligence artificielle\n\nVotre choix :");
-        scanf("%c", &CHOIX);
+        scanf(" %c", &CHOIX);
         if(CHOIX == 't'){ // SI L'UTILISATEUR CHOISI LE TEST
             InitialisationProchaineLigne();
             MouvementAvant();
@@ -664,9 +668,12 @@
                         printf("Iteration: %d | Cible: '%c' | Predit: '%c' (Confiance: %.2f%%) | Erreur: %.4f\n", 
                                 i, (char)CIBLE_CHAR, (char)INDEX_SELECTIONNE_TEST, max_proba*100, ERREUR_DU_RESULTAT);
                         if (EstValide()) {
+                            // ... ton code d'affichage actuel ...
                             Sauvegarde();
                         } else {
-                            printf("ALERTE : NaN détecté à l'itération %d ! Sauvegarde annulée.\n", i);
+                            printf("🚨 ALERTE : NaN détecté à l'itération %d ! Sauvegarde annulée pour éviter la corruption.\n", i);
+                            // Optionnel : tu peux arrêter l'entraînement ici avec 'break;'
+                            // car une fois NaN, l'IA n'apprend plus rien.
                             break;
                         }
                     }
