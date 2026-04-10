@@ -668,12 +668,9 @@
                         printf("Iteration: %d | Cible: '%c' | Predit: '%c' (Confiance: %.2f%%) | Erreur: %.4f\n", 
                                 i, (char)CIBLE_CHAR, (char)INDEX_SELECTIONNE_TEST, max_proba*100, ERREUR_DU_RESULTAT);
                         if (EstValide()) {
-                            // ... ton code d'affichage actuel ...
                             Sauvegarde();
                         } else {
-                            printf("🚨 ALERTE : NaN détecté à l'itération %d ! Sauvegarde annulée pour éviter la corruption.\n", i);
-                            // Optionnel : tu peux arrêter l'entraînement ici avec 'break;'
-                            // car une fois NaN, l'IA n'apprend plus rien.
+                            printf("Sauvegarde annulée pour éviter la corruption.\n");
                             break;
                         }
                     }
